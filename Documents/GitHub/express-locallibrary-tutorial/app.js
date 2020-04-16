@@ -6,12 +6,15 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+const catalogRouter = require('./routes/catalog')
+const dotenv = require('dotenv')
 
 var app = express();
+dotenv.config({ path: '.env' })
 
 // Set up mongoose connection
 var mongoose = require('mongoose');
-var dev_db_url = 'mongodb+srv://mattb:qweqwe@loccallib-yrj7f.mongodb.net/test?retryWrites=true&w=majority'
+var dev_db_url = process.env.ATLAS_URI
 var mongoDB = process.env.MONGODB_URI || dev_db_url;
 mongoose.connect(mongoDB, { useNewUrlParser: true });
 mongoose.Promise = global.Promise;
@@ -30,6 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/catalog', catalogRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -48,3 +52,5 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+app.listen(3002, ()=>{console.log("running now.");});
+
